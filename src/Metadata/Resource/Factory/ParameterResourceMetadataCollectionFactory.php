@@ -93,9 +93,9 @@ final class ParameterResourceMetadataCollectionFactory implements ResourceMetada
     /**
      * @return array{propertyNames: string[], properties: array<string, ApiProperty>}
      */
-    private function getProperties(string $resourceClass, ?Parameter $parameter = null, ?string $key = null): array
+    private function getProperties(string $resourceClass, ?Parameter $parameter = null): array
     {
-        $k = $resourceClass.($parameter?->getProperties() ? ($parameter->getKey() ?? ($key ?? '')) : '');
+        $k = $resourceClass.($parameter?->getProperties() ? ($parameter->getKey() ?? '') : '');
         if (isset($this->localPropertyCache[$k])) {
             return $this->localPropertyCache[$k];
         }
@@ -120,7 +120,7 @@ final class ParameterResourceMetadataCollectionFactory implements ResourceMetada
         $propertyNames = $properties = [];
         $parameters = $operation->getParameters() ?? new Parameters();
         foreach ($parameters as $key => $parameter) {
-            ['propertyNames' => $propertyNames, 'properties' => $properties] = $this->getProperties($resourceClass, $parameter, $key);
+            ['propertyNames' => $propertyNames, 'properties' => $properties] = $this->getProperties($resourceClass, $parameter);
             if (null === $parameter->getProvider() && (($f = $parameter->getFilter()) && $f instanceof ParameterProviderFilterInterface)) {
                 $parameters->add($key, $parameter->withProvider($f->getParameterProvider()));
             }
